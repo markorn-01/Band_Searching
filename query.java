@@ -58,6 +58,7 @@ public class query {
                     System.out.println("Enter the name of the file you want to export: ");
                     String filename = sc.nextLine();
                     exportCSV(list, filename);
+                    list.clear();
                 }
                 System.out.println("Do you want to search again? (Y/N)");
                 answer = sc.nextLine();
