@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
@@ -7,6 +8,11 @@ public class query {
     static String DB;
     static String USER;
     static String PASS;
+    public static void exportCSV(List<String[]> productInfo, String filename) throws IOException{
+        CSVExporter csv = new CSVExporter(productInfo);     
+        String[] title = {"Album", "Release Year", "Song"};
+        csv.writeCSV(title, filename);
+    }
     public static void main(String[] args) {
         Connection  conn = null;
         Statement   stmt = null;
@@ -27,6 +33,7 @@ public class query {
             System.out.println("Instancize Statement...");
             stmt = conn.createStatement();
             String sql, searchName;
+            List<String[]> list = new ArrayList<String[]>();
             ResultSet rs;
             while (true){
                 System.out.println("Enter the name of the band you want to search for: "); 
@@ -42,9 +49,18 @@ public class query {
                     String song_name = rs.getString("Song Name");
                     // Print information
                     System.out.printf("%-50s%-25d%-50s\n", name, release_year, song_name);
+                    String[] info = {name, Integer.toString(release_year), song_name};
+                    list.add(info);
+                }
+                System.out.println("Do you want to export the result to a CSV file? (Y/N)");
+                String answer = sc.nextLine();
+                if (answer.equals("Y") || answer.equals("y")){
+                    System.out.println("Enter the name of the file you want to export: ");
+                    String filename = sc.nextLine();
+                    exportCSV(list, filename);
                 }
                 System.out.println("Do you want to search again? (Y/N)");
-                String answer = sc.nextLine();
+                answer = sc.nextLine();
                 if (answer.equals("N") || answer.equals("n")){
                     break;
                 }
